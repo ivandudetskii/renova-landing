@@ -1,0 +1,1485 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>RENOVA — Премиум ремонт квартир с AI-расчётом</title>
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@300;400;500;600;700;800&family=Fraunces:wght@400;600;800;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0a0a;
+    --surface: #141414;
+    --surface-2: #1c1c1c;
+    --border: #2a2a2a;
+    --accent: #d4a574;
+    --accent-bright: #e8b87a;
+    --text: #f5f5f0;
+    --text-dim: #999;
+    --muted: #666;
+    --success: #7ec699;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Manrope', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+
+  ::selection { background: var(--accent); color: var(--bg); }
+
+  .nav {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    z-index: 100;
+    padding: 18px 6%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: rgba(10,10,10,0.85);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid transparent;
+    transition: border-color 0.3s;
+  }
+
+  .nav.scrolled { border-color: var(--border); }
+
+  .logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    letter-spacing: -0.02em;
+  }
+
+  .logo span { color: var(--accent); font-style: italic; }
+
+  .nav-links {
+    display: flex;
+    gap: 32px;
+    list-style: none;
+  }
+
+  .nav-links a {
+    color: var(--text-dim);
+    text-decoration: none;
+    font-size: 0.85rem;
+    font-weight: 500;
+    transition: color 0.2s;
+  }
+
+  .nav-links a:hover { color: var(--accent); }
+
+  .nav-cta {
+    background: var(--accent);
+    color: var(--bg);
+    padding: 10px 22px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.85rem;
+    transition: transform 0.2s, box-shadow 0.2s;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+  }
+
+  .nav-cta:hover { 
+    transform: translateY(-2px); 
+    box-shadow: 0 10px 30px rgba(212,165,116,0.3);
+  }
+
+  @media (max-width: 768px) {
+    .nav-links { display: none; }
+    .nav { padding: 14px 5%; }
+  }
+
+  .hero {
+    min-height: 100vh;
+    padding: 140px 6% 80px;
+    position: relative;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: 
+      radial-gradient(ellipse 60% 50% at 80% 30%, rgba(212,165,116,0.08), transparent 60%),
+      radial-gradient(ellipse 70% 60% at 20% 80%, rgba(212,165,116,0.04), transparent 60%);
+    pointer-events: none;
+  }
+
+  .hero-content {
+    max-width: 1400px;
+    margin: 0 auto;
+    width: 100%;
+    display: grid;
+    grid-template-columns: 1.2fr 1fr;
+    gap: 80px;
+    align-items: center;
+    position: relative;
+    z-index: 1;
+  }
+
+  .hero-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 6px 14px;
+    background: rgba(212,165,116,0.1);
+    border: 1px solid rgba(212,165,116,0.3);
+    border-radius: 100px;
+    font-size: 0.75rem;
+    font-weight: 600;
+    color: var(--accent);
+    margin-bottom: 24px;
+    letter-spacing: 0.05em;
+    text-transform: uppercase;
+  }
+
+  .hero-tag::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--success);
+    border-radius: 50%;
+    box-shadow: 0 0 10px var(--success);
+    animation: pulse 2s ease-in-out infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.4; }
+  }
+
+  .hero h1 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2.5rem, 6vw, 5rem);
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.03em;
+    margin-bottom: 24px;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .hero p {
+    font-size: 1.15rem;
+    color: var(--text-dim);
+    margin-bottom: 36px;
+    max-width: 540px;
+    line-height: 1.7;
+  }
+
+  .hero-cta-row {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+    align-items: center;
+  }
+
+  .btn-primary {
+    background: var(--accent);
+    color: var(--bg);
+    padding: 16px 32px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 0.95rem;
+    transition: all 0.3s;
+    border: none;
+    cursor: pointer;
+    font-family: inherit;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .btn-primary:hover { 
+    transform: translateY(-3px);
+    box-shadow: 0 15px 40px rgba(212,165,116,0.35);
+    background: var(--accent-bright);
+  }
+
+  .btn-primary svg { transition: transform 0.3s; }
+  .btn-primary:hover svg { transform: translateX(4px); }
+
+  .btn-secondary {
+    background: transparent;
+    color: var(--text);
+    padding: 16px 28px;
+    border-radius: 100px;
+    text-decoration: none;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border: 1px solid var(--border);
+    transition: all 0.2s;
+    font-family: inherit;
+    cursor: pointer;
+  }
+
+  .btn-secondary:hover { 
+    border-color: var(--accent); 
+    color: var(--accent);
+  }
+
+  .hero-stats {
+    display: flex;
+    gap: 40px;
+    margin-top: 60px;
+    padding-top: 36px;
+    border-top: 1px solid var(--border);
+  }
+
+  .stat-num {
+    font-family: 'Fraunces', serif;
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .stat-label {
+    font-size: 0.78rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-top: 6px;
+  }
+
+  .hero-visual {
+    position: relative;
+    height: 600px;
+  }
+
+  .visual-card {
+    position: absolute;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 16px;
+    padding: 24px;
+    backdrop-filter: blur(10px);
+  }
+
+  .visual-card.main {
+    inset: 40px 0 40px 40px;
+    background: linear-gradient(135deg, rgba(212,165,116,0.08), rgba(212,165,116,0.02));
+    border-color: rgba(212,165,116,0.3);
+    overflow: hidden;
+  }
+
+  .visual-card.main::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(212,165,116,0.08) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,165,116,0.08) 1px, transparent 1px);
+    background-size: 30px 30px;
+    pointer-events: none;
+  }
+
+  .visual-card.main .room-illustration {
+    position: relative;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    z-index: 1;
+  }
+
+  .visual-card.floating-1 {
+    top: 20px;
+    right: 0;
+    width: 220px;
+    z-index: 2;
+    transform: rotate(2deg);
+    animation: float1 6s ease-in-out infinite;
+  }
+
+  .visual-card.floating-2 {
+    bottom: 30px;
+    left: 0;
+    width: 240px;
+    z-index: 2;
+    transform: rotate(-2deg);
+    animation: float2 7s ease-in-out infinite;
+  }
+
+  @keyframes float1 {
+    0%, 100% { transform: rotate(2deg) translateY(0); }
+    50% { transform: rotate(2deg) translateY(-10px); }
+  }
+
+  @keyframes float2 {
+    0%, 100% { transform: rotate(-2deg) translateY(0); }
+    50% { transform: rotate(-2deg) translateY(-8px); }
+  }
+
+  .floating-label {
+    font-size: 0.7rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 8px;
+  }
+
+  .floating-value {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.1;
+  }
+
+  .floating-sub {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    margin-top: 6px;
+  }
+
+  @media (max-width: 968px) {
+    .hero-content { grid-template-columns: 1fr; gap: 40px; }
+    .hero-visual { height: 380px; }
+    .hero-stats { gap: 28px; }
+    .stat-num { font-size: 1.8rem; }
+  }
+
+  section { padding: 100px 6%; position: relative; }
+
+  .section-inner { max-width: 1300px; margin: 0 auto; }
+
+  .section-tag {
+    display: inline-block;
+    padding: 6px 14px;
+    background: rgba(212,165,116,0.1);
+    border: 1px solid rgba(212,165,116,0.3);
+    border-radius: 100px;
+    font-size: 0.72rem;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    font-weight: 600;
+    margin-bottom: 20px;
+  }
+
+  .section-title {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 4.5vw, 3.5rem);
+    font-weight: 800;
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    margin-bottom: 20px;
+  }
+
+  .section-title em {
+    font-style: italic;
+    font-weight: 400;
+    color: var(--accent);
+  }
+
+  .section-sub {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    max-width: 620px;
+    line-height: 1.7;
+    margin-bottom: 60px;
+  }
+
+  .calculator {
+    background: linear-gradient(180deg, var(--bg) 0%, var(--surface) 100%);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
+  }
+
+  .calc-grid {
+    display: grid;
+    grid-template-columns: 1fr 1.1fr;
+    gap: 60px;
+    align-items: start;
+  }
+
+  .calc-form {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 36px;
+  }
+
+  .calc-form h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .calc-form .calc-sub {
+    color: var(--text-dim);
+    font-size: 0.9rem;
+    margin-bottom: 28px;
+  }
+
+  .form-group { margin-bottom: 22px; }
+
+  .form-label {
+    display: block;
+    font-size: 0.78rem;
+    color: var(--text-dim);
+    margin-bottom: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    font-weight: 600;
+  }
+
+  .form-input,
+  .form-select,
+  .form-textarea {
+    width: 100%;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px 18px;
+    color: var(--text);
+    font-family: inherit;
+    font-size: 0.95rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+
+  .form-input:focus,
+  .form-select:focus,
+  .form-textarea:focus {
+    border-color: var(--accent);
+    box-shadow: 0 0 0 3px rgba(212,165,116,0.1);
+  }
+
+  .form-textarea { resize: vertical; min-height: 80px; font-family: inherit; }
+
+  .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+
+  .type-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+  }
+
+  .type-option {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    padding: 12px 8px;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.82rem;
+    font-weight: 500;
+  }
+
+  .type-option:hover { border-color: var(--accent); }
+
+  .type-option.selected {
+    background: rgba(212,165,116,0.15);
+    border-color: var(--accent);
+    color: var(--accent);
+  }
+
+  .calc-btn {
+    width: 100%;
+    background: var(--accent);
+    color: var(--bg);
+    border: none;
+    padding: 18px;
+    border-radius: 12px;
+    font-family: inherit;
+    font-weight: 700;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.2s;
+    margin-top: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+  }
+
+  .calc-btn:hover:not(:disabled) {
+    background: var(--accent-bright);
+    transform: translateY(-2px);
+    box-shadow: 0 10px 30px rgba(212,165,116,0.3);
+  }
+
+  .calc-btn:disabled { opacity: 0.6; cursor: not-allowed; }
+
+  .calc-btn .spinner {
+    width: 16px; height: 16px;
+    border: 2px solid var(--bg);
+    border-top-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    display: none;
+  }
+
+  .calc-btn.loading .spinner { display: block; }
+  .calc-btn.loading .btn-text { display: none; }
+
+  @keyframes spin {
+    to { transform: rotate(360deg); }
+  }
+
+  .calc-result {
+    background: var(--surface-2);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 36px;
+    min-height: 100%;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .calc-result::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 0%, rgba(212,165,116,0.08), transparent 60%);
+    pointer-events: none;
+  }
+
+  .result-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    min-height: 400px;
+    color: var(--text-dim);
+    position: relative;
+    z-index: 1;
+  }
+
+  .result-empty-icon {
+    width: 72px;
+    height: 72px;
+    background: rgba(212,165,116,0.08);
+    border: 1px solid rgba(212,165,116,0.25);
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .result-empty p { max-width: 280px; line-height: 1.6; font-size: 0.95rem; }
+
+  .result-content { display: none; position: relative; z-index: 1; }
+  .result-content.active { display: block; animation: resultIn 0.5s ease; }
+
+  @keyframes resultIn {
+    from { opacity: 0; transform: translateY(15px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .result-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    padding-bottom: 24px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .result-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 6px 12px;
+    background: rgba(126,198,153,0.12);
+    border: 1px solid rgba(126,198,153,0.3);
+    border-radius: 100px;
+    color: var(--success);
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
+
+  .result-price-block { margin-bottom: 28px; }
+
+  .result-price-label {
+    font-size: 0.8rem;
+    color: var(--text-dim);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 8px;
+  }
+
+  .result-price {
+    font-family: 'Fraunces', serif;
+    font-size: 2.6rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  .result-price-range {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin-top: 6px;
+  }
+
+  .result-details {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 14px;
+    margin-bottom: 24px;
+  }
+
+  .detail-card {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 14px;
+  }
+
+  .detail-label {
+    font-size: 0.72rem;
+    color: var(--muted);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    margin-bottom: 6px;
+  }
+
+  .detail-value {
+    font-weight: 700;
+    font-size: 1.05rem;
+  }
+
+  .result-text {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 18px;
+    margin-bottom: 24px;
+    color: var(--text-dim);
+    line-height: 1.7;
+    font-size: 0.92rem;
+    white-space: pre-wrap;
+  }
+
+  .result-cta { display: flex; gap: 10px; }
+  .result-cta button { flex: 1; }
+
+  @media (max-width: 968px) {
+    .calc-grid { grid-template-columns: 1fr; gap: 28px; }
+    .result-empty { min-height: 250px; }
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .feature {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 36px 28px;
+    transition: all 0.3s;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .feature::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--accent), transparent);
+    opacity: 0;
+    transition: opacity 0.3s;
+  }
+
+  .feature:hover {
+    transform: translateY(-6px);
+    border-color: rgba(212,165,116,0.4);
+  }
+
+  .feature:hover::before { opacity: 1; }
+
+  .feature-icon {
+    width: 52px;
+    height: 52px;
+    background: rgba(212,165,116,0.1);
+    border: 1px solid rgba(212,165,116,0.25);
+    border-radius: 14px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--accent);
+    margin-bottom: 20px;
+  }
+
+  .feature h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    margin-bottom: 10px;
+  }
+
+  .feature p {
+    color: var(--text-dim);
+    font-size: 0.92rem;
+    line-height: 1.7;
+  }
+
+  @media (max-width: 968px) {
+    .features-grid { grid-template-columns: 1fr; }
+  }
+
+  .process-list { counter-reset: step; }
+
+  .process-step {
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    gap: 32px;
+    padding: 36px 0;
+    border-bottom: 1px solid var(--border);
+    counter-increment: step;
+    align-items: start;
+  }
+
+  .process-step:last-child { border-bottom: none; }
+
+  .process-num {
+    font-family: 'Fraunces', serif;
+    font-size: 3rem;
+    font-weight: 800;
+    color: var(--accent);
+    line-height: 1;
+  }
+
+  .process-num::before { content: '0' counter(step); }
+
+  .process-content h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.5rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .process-content p {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    line-height: 1.7;
+    max-width: 600px;
+  }
+
+  @media (max-width: 768px) {
+    .process-step { grid-template-columns: 1fr; gap: 8px; padding: 28px 0; }
+    .process-num { font-size: 2.2rem; }
+  }
+
+  .reviews-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 24px;
+  }
+
+  .review {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 32px 28px;
+  }
+
+  .review-stars {
+    display: flex;
+    gap: 3px;
+    color: var(--accent);
+    margin-bottom: 16px;
+    font-size: 1rem;
+  }
+
+  .review-text {
+    color: var(--text);
+    line-height: 1.7;
+    margin-bottom: 24px;
+    font-size: 0.95rem;
+  }
+
+  .review-author {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border);
+  }
+
+  .review-avatar {
+    width: 44px;
+    height: 44px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, var(--accent), #a37e51);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--bg);
+    font-weight: 800;
+    font-family: 'Fraunces', serif;
+  }
+
+  .review-name { font-weight: 700; font-size: 0.92rem; }
+  .review-role { color: var(--muted); font-size: 0.8rem; margin-top: 2px; }
+
+  @media (max-width: 968px) {
+    .reviews-grid { grid-template-columns: 1fr; }
+  }
+
+  .cta-final {
+    background: linear-gradient(135deg, rgba(212,165,116,0.08), rgba(212,165,116,0.02));
+    border: 1px solid rgba(212,165,116,0.3);
+    border-radius: 32px;
+    padding: 80px 40px;
+    text-align: center;
+    margin: 0 6% 100px;
+    position: relative;
+    overflow: hidden;
+  }
+
+  .cta-final::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(212,165,116,0.05) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(212,165,116,0.05) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+  }
+
+  .cta-final h2 {
+    font-family: 'Fraunces', serif;
+    font-size: clamp(2rem, 4vw, 3rem);
+    font-weight: 800;
+    line-height: 1.1;
+    margin-bottom: 20px;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-final h2 em { font-style: italic; color: var(--accent); }
+
+  .cta-final p {
+    color: var(--text-dim);
+    font-size: 1.05rem;
+    max-width: 520px;
+    margin: 0 auto 36px;
+    line-height: 1.7;
+    position: relative;
+    z-index: 1;
+  }
+
+  .cta-final .btn-primary { position: relative; z-index: 1; }
+
+  footer {
+    border-top: 1px solid var(--border);
+    padding: 50px 6% 30px;
+    text-align: center;
+  }
+
+  .footer-logo {
+    font-family: 'Fraunces', serif;
+    font-weight: 900;
+    font-size: 1.5rem;
+    margin-bottom: 16px;
+  }
+
+  .footer-logo span { color: var(--accent); font-style: italic; }
+
+  .footer-info {
+    color: var(--text-dim);
+    font-size: 0.88rem;
+    margin-bottom: 24px;
+    line-height: 1.7;
+  }
+
+  .footer-bottom {
+    color: var(--muted);
+    font-size: 0.78rem;
+    padding-top: 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .modal-overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 200;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+  }
+
+  .modal-overlay.active { display: flex; }
+
+  .modal {
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 24px;
+    padding: 40px;
+    max-width: 480px;
+    width: 100%;
+    position: relative;
+    animation: modalIn 0.3s ease;
+  }
+
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95); }
+    to { opacity: 1; transform: scale(1); }
+  }
+
+  .modal-close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+    width: 36px;
+    height: 36px;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    color: var(--text);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.2rem;
+  }
+
+  .modal h3 {
+    font-family: 'Fraunces', serif;
+    font-size: 1.6rem;
+    font-weight: 800;
+    margin-bottom: 8px;
+  }
+
+  .modal-sub {
+    color: var(--text-dim);
+    font-size: 0.95rem;
+    margin-bottom: 24px;
+  }
+
+  .modal-success {
+    text-align: center;
+    padding: 20px 0;
+    display: none;
+  }
+
+  .modal-success.active { display: block; }
+  .modal-form.hidden { display: none; }
+
+  .success-icon {
+    width: 72px;
+    height: 72px;
+    background: rgba(126,198,153,0.15);
+    border: 1px solid rgba(126,198,153,0.4);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--success);
+    margin: 0 auto 20px;
+  }
+</style>
+</head>
+<body>
+
+<nav class="nav" id="nav">
+  <div class="logo">RENO<span>va</span></div>
+  <ul class="nav-links">
+    <li><a href="#calculator">Калькулятор</a></li>
+    <li><a href="#features">Преимущества</a></li>
+    <li><a href="#process">Процесс</a></li>
+    <li><a href="#reviews">Отзывы</a></li>
+  </ul>
+  <button class="nav-cta" onclick="openModal()">Заявка</button>
+</nav>
+
+<section class="hero">
+  <div class="hero-content">
+    <div>
+      <div class="hero-tag">AI-расчёт за 30 секунд</div>
+      <h1>Премиум ремонт квартир<br><em>под ключ</em> в Москве</h1>
+      <p>Делаем ремонт, который радует годами. Прозрачная смета, фиксированный срок, гарантия 5 лет. Узнайте точную стоимость прямо сейчас — наш AI рассчитает её за 30 секунд.</p>
+      <div class="hero-cta-row">
+        <a href="#calculator" class="btn-primary">Рассчитать стоимость
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
+        </a>
+        <button class="btn-secondary" onclick="openModal()">Бесплатная консультация</button>
+      </div>
+      <div class="hero-stats">
+        <div><div class="stat-num">450+</div><div class="stat-label">Сданных квартир</div></div>
+        <div><div class="stat-num">5</div><div class="stat-label">Лет гарантии</div></div>
+        <div><div class="stat-num">98%</div><div class="stat-label">Сдают в срок</div></div>
+      </div>
+    </div>
+    <div class="hero-visual">
+      <div class="visual-card main">
+        <div class="room-illustration">
+          <svg width="200" height="200" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="0.7" opacity="0.8">
+            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/>
+            <polyline points="9 22 9 12 15 12 15 22"/>
+          </svg>
+        </div>
+      </div>
+      <div class="visual-card floating-1">
+        <div class="floating-label">Стоимость м²</div>
+        <div class="floating-value">от 12 000 ₽</div>
+        <div class="floating-sub">Финальная цена в смете</div>
+      </div>
+      <div class="visual-card floating-2">
+        <div class="floating-label">Срок ремонта</div>
+        <div class="floating-value">от 45 дней</div>
+        <div class="floating-sub">Фиксируем в договоре</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="calculator" id="calculator">
+  <div class="section-inner">
+    <div class="section-tag">AI-калькулятор</div>
+    <h2 class="section-title">Узнайте цену вашего ремонта<br><em>за 30 секунд</em></h2>
+    <p class="section-sub">Заполните параметры — наш искусственный интеллект учтёт тип ремонта, площадь, материалы и сложность работ.</p>
+    
+    <div class="calc-grid">
+      <div class="calc-form">
+        <h3>Параметры квартиры</h3>
+        <p class="calc-sub">Чем точнее данные — тем точнее расчёт</p>
+
+        <div class="form-group">
+          <label class="form-label">Тип ремонта</label>
+          <div class="type-grid">
+            <div class="type-option selected" data-type="cosmetic">Косметический</div>
+            <div class="type-option" data-type="capital">Капитальный</div>
+            <div class="type-option" data-type="premium">Премиум</div>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Площадь, м²</label>
+          <input type="number" class="form-input" id="area" placeholder="Например: 65" min="20" max="500" value="65">
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label class="form-label">Комнат</label>
+            <select class="form-select" id="rooms">
+              <option value="1">1 комната</option>
+              <option value="2" selected>2 комнаты</option>
+              <option value="3">3 комнаты</option>
+              <option value="4">4+ комнат</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label class="form-label">Санузлов</label>
+            <select class="form-select" id="bathrooms">
+              <option value="1" selected>1</option>
+              <option value="2">2</option>
+              <option value="3">3+</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Состояние сейчас</label>
+          <select class="form-select" id="condition">
+            <option value="new">Новостройка без отделки</option>
+            <option value="good" selected>Жилое, нужен косметический</option>
+            <option value="bad">Нужно полностью переделать</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label class="form-label">Особые пожелания (необязательно)</label>
+          <textarea class="form-textarea" id="wishes" placeholder="Например: тёплый пол в ванной, перепланировка кухни..."></textarea>
+        </div>
+
+        <button class="calc-btn" id="calcBtn" onclick="calculate()">
+          <span class="btn-text">Рассчитать через AI</span>
+          <div class="spinner"></div>
+        </button>
+      </div>
+
+      <div class="calc-result">
+        <div class="result-empty" id="resultEmpty">
+          <div class="result-empty-icon">
+            <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <line x1="3" y1="9" x2="21" y2="9"/>
+              <line x1="9" y1="21" x2="9" y2="9"/>
+            </svg>
+          </div>
+          <p>Заполните форму слева и нажмите "Рассчитать". AI проанализирует данные и покажет стоимость вашего ремонта.</p>
+        </div>
+
+        <div class="result-content" id="resultContent">
+          <div class="result-header">
+            <div class="result-badge">
+              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Расчёт готов
+            </div>
+          </div>
+          <div class="result-price-block">
+            <div class="result-price-label">Ориентировочная стоимость</div>
+            <div class="result-price" id="resultPrice">— ₽</div>
+            <div class="result-price-range" id="resultRange">диапазон цен</div>
+          </div>
+          <div class="result-details">
+            <div class="detail-card">
+              <div class="detail-label">Срок ремонта</div>
+              <div class="detail-value" id="resultTime">—</div>
+            </div>
+            <div class="detail-card">
+              <div class="detail-label">Цена за м²</div>
+              <div class="detail-value" id="resultPerM">—</div>
+            </div>
+          </div>
+          <div class="result-text" id="resultText"></div>
+          <div class="result-cta">
+            <button class="btn-primary" style="flex:1; justify-content: center;" onclick="openModal('calc')">Получить точную смету</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="features">
+  <div class="section-inner">
+    <div class="section-tag">Почему мы</div>
+    <h2 class="section-title">Ремонт без головной боли<br>и <em>сюрпризов</em> в смете</h2>
+    
+    <div class="features-grid">
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"/></svg></div>
+        <h3>Фиксированная цена</h3>
+        <p>Сумма, согласованная в договоре, не меняется. Никаких скрытых доплат и "вдруг понадобилось".</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div>
+        <h3>Сдаём в срок</h3>
+        <p>За каждый день просрочки платим вам 0.1% от стоимости. 98% объектов сдаём вовремя.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <h3>Гарантия 5 лет</h3>
+        <p>На все работы. Если что-то отвалится, треснет, потечёт — приедем и переделаем за свой счёт.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></div>
+        <h3>Свои бригады</h3>
+        <p>Не нанимаем подрядчиков. Все мастера в штате, прошли обучение и работают по нашим стандартам.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18"/><path d="M9 21V9"/></svg></div>
+        <h3>3D-визуализация</h3>
+        <p>Покажем будущий ремонт в 3D ещё до начала работ. Сможете "пройтись" по квартире.</p>
+      </div>
+      <div class="feature">
+        <div class="feature-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"/></svg></div>
+        <h3>Прораб на связи 24/7</h3>
+        <p>Ваш личный менеджер отвечает в любое время. Каждый день — фотоотчёт о прогрессе.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="process" style="background: var(--surface);">
+  <div class="section-inner">
+    <div class="section-tag">Этапы работы</div>
+    <h2 class="section-title">Как мы делаем ремонт<br><em>от заявки до ключей</em></h2>
+    
+    <div class="process-list">
+      <div class="process-step">
+        <div class="process-num"></div>
+        <div class="process-content">
+          <h3>Замер и обсуждение</h3>
+          <p>Приезжаем бесплатно, делаем точный замер квартиры, обсуждаем ваши пожелания. Подбираем стиль, материалы, расположение.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-num"></div>
+        <div class="process-content">
+          <h3>Дизайн-проект и смета</h3>
+          <p>За 5-7 дней делаем 3D-визуализацию и детальную смету. Вы видите каждый рубль и каждый материал заранее.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-num"></div>
+        <div class="process-content">
+          <h3>Договор с гарантиями</h3>
+          <p>Подписываем договор с фиксированной ценой, сроком и штрафом за просрочку. Оплата идёт поэтапно.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-num"></div>
+        <div class="process-content">
+          <h3>Ремонт под ключ</h3>
+          <p>Закупаем материалы оптом (экономия до 20%), доставляем сами. Вы получаете ежедневный фотоотчёт.</p>
+        </div>
+      </div>
+      <div class="process-step">
+        <div class="process-num"></div>
+        <div class="process-content">
+          <h3>Сдача и гарантия</h3>
+          <p>Принимаете готовый ремонт по чек-листу. Получаете гарантию 5 лет, паспорт квартиры, контакты прораба.</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="reviews">
+  <div class="section-inner">
+    <div class="section-tag">Отзывы клиентов</div>
+    <h2 class="section-title">Что говорят те,<br>кто <em>уже сделал ремонт</em></h2>
+
+    <div class="reviews-grid">
+      <div class="review">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Сделали ремонт в трёшке за 75 дней — уложились ровно в срок. Смета не выросла ни на копейку. Особенно удивил подход: каждый вечер фото в чат, прораб всегда на связи.</p>
+        <div class="review-author">
+          <div class="review-avatar">А</div>
+          <div>
+            <div class="review-name">Анна Петрова</div>
+            <div class="review-role">Москва, ЖК «Символ»</div>
+          </div>
+        </div>
+      </div>
+      <div class="review">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Сначала пугала цена, но когда сравнила со сметами других — RENOVA оказалась на уровне середины рынка, при этом качество в разы выше. Через год — ничего не отвалилось, не треснуло.</p>
+        <div class="review-author">
+          <div class="review-avatar">Д</div>
+          <div>
+            <div class="review-name">Дмитрий Соколов</div>
+            <div class="review-role">Москва, Хамовники</div>
+          </div>
+        </div>
+      </div>
+      <div class="review">
+        <div class="review-stars">★★★★★</div>
+        <p class="review-text">Делали капитальный с перепланировкой. Команда сделала всё «под ключ» — от согласования планировки до уборки. Я даже не приезжала на объект, доверилась полностью. Не пожалела.</p>
+        <div class="review-author">
+          <div class="review-avatar">Е</div>
+          <div>
+            <div class="review-name">Елена Васильева</div>
+            <div class="review-role">Москва, Сити</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="cta-final">
+  <h2>Готовы начать <em>ремонт мечты?</em></h2>
+  <p>Оставьте заявку — приедем на бесплатный замер, обсудим детали и сделаем точную смету за 5 дней.</p>
+  <button class="btn-primary" onclick="openModal()">Оставить заявку
+    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+      <line x1="5" y1="12" x2="19" y2="12"></line>
+      <polyline points="12 5 19 12 12 19"></polyline>
+    </svg>
+  </button>
+</div>
+
+<footer>
+  <div class="footer-logo">RENO<span>va</span></div>
+  <div class="footer-info">Премиум ремонт квартир в Москве с 2018 года<br>+7 (495) 000-00-00 · hello@renova.ru</div>
+  <div class="footer-bottom">© 2026 RENOVA. Все права защищены.</div>
+</footer>
+
+<div class="modal-overlay" id="modal">
+  <div class="modal">
+    <button class="modal-close" onclick="closeModal()">×</button>
+    <div class="modal-form" id="modalForm">
+      <h3>Оставьте заявку</h3>
+      <p class="modal-sub">Перезвоним в течение 15 минут</p>
+      <div class="form-group">
+        <label class="form-label">Ваше имя</label>
+        <input type="text" class="form-input" id="leadName" placeholder="Иван Иванов">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Телефон</label>
+        <input type="tel" class="form-input" id="leadPhone" placeholder="+7 (___) ___-__-__">
+      </div>
+      <div class="form-group">
+        <label class="form-label">Сообщение (необязательно)</label>
+        <textarea class="form-textarea" id="leadMessage" placeholder="Расскажите кратко о вашем проекте"></textarea>
+      </div>
+      <button class="calc-btn" onclick="submitLead()"><span class="btn-text">Отправить заявку</span></button>
+    </div>
+    <div class="modal-success" id="modalSuccess">
+      <div class="success-icon">
+        <svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="20 6 9 17 4 12"/>
+        </svg>
+      </div>
+      <h3>Заявка отправлена!</h3>
+      <p style="color: var(--text-dim); margin-top: 12px; line-height: 1.7;">Мы перезвоним в течение 15 минут.<br>А пока можете изучить наши кейсы.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+window.addEventListener('scroll', () => {
+  document.getElementById('nav').classList.toggle('scrolled', window.scrollY > 30);
+});
+
+let selectedType = 'cosmetic';
+document.querySelectorAll('.type-option').forEach(el => {
+  el.addEventListener('click', () => {
+    document.querySelectorAll('.type-option').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    selectedType = el.dataset.type;
+  });
+});
+
+function calculate() {
+  const btn = document.getElementById('calcBtn');
+  const area = parseFloat(document.getElementById('area').value);
+  const rooms = parseInt(document.getElementById('rooms').value);
+  const bathrooms = parseInt(document.getElementById('bathrooms').value);
+  const condition = document.getElementById('condition').value;
+  const wishes = document.getElementById('wishes').value;
+
+  if (!area || area < 20) {
+    alert('Укажите площадь от 20 м²');
+    return;
+  }
+
+  btn.classList.add('loading');
+  btn.disabled = true;
+
+  setTimeout(() => {
+    const basePrices = { cosmetic: 12000, capital: 22000, premium: 38000 };
+    let pricePerM = basePrices[selectedType];
+
+    if (condition === 'new') pricePerM *= 1.15;
+    if (condition === 'bad') pricePerM *= 1.25;
+    if (bathrooms >= 2) pricePerM *= 1.08;
+    if (bathrooms >= 3) pricePerM *= 1.12;
+    if (wishes.length > 30) pricePerM *= 1.06;
+
+    const totalLow = Math.round(pricePerM * area / 1000) * 1000;
+    const totalHigh = Math.round(totalLow * 1.18 / 1000) * 1000;
+
+    const timeBase = { cosmetic: 30, capital: 60, premium: 90 };
+    let days = timeBase[selectedType] + Math.round(area / 10);
+    if (condition === 'bad') days += 15;
+
+    const typeNames = {
+      cosmetic: 'косметический ремонт',
+      capital: 'капитальный ремонт',
+      premium: 'премиум-ремонт'
+    };
+
+    let text = `Для квартиры ${area} м² (${rooms} комн., ${bathrooms} с/у) в ${selectedType === 'premium' ? 'премиум-сегменте' : 'стандартном сегменте'} мы рекомендуем ${typeNames[selectedType]}. `;
+    
+    if (condition === 'new') {
+      text += 'Учитываем что объект — новостройка без отделки: добавляем штукатурку стен, стяжку пола, разводку коммуникаций. ';
+    } else if (condition === 'bad') {
+      text += 'Учитываем сложный демонтаж старой отделки и возможные ремонтные работы базы. ';
+    }
+
+    if (bathrooms >= 2) {
+      text += `Расчёт включает ${bathrooms} полноценных санузла с гидроизоляцией. `;
+    }
+
+    if (wishes.length > 5) {
+      text += 'Особые пожелания учтены — точная стоимость уточнится после замера. ';
+    }
+
+    text += `\n\nВ цену включено: материалы среднего ценового сегмента, работа всех специалистов, вывоз мусора, уборка после ремонта. Точная смета — после бесплатного замера.`;
+
+    document.getElementById('resultEmpty').style.display = 'none';
+    document.getElementById('resultContent').classList.add('active');
+    document.getElementById('resultPrice').textContent = totalLow.toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('resultRange').textContent = `от ${totalLow.toLocaleString('ru-RU')} до ${totalHigh.toLocaleString('ru-RU')} ₽`;
+    document.getElementById('resultTime').textContent = `${days}-${days + 14} дней`;
+    document.getElementById('resultPerM').textContent = Math.round(pricePerM).toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('resultText').textContent = text;
+
+    btn.classList.remove('loading');
+    btn.disabled = false;
+    document.getElementById('resultContent').scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  }, 1400);
+}
+
+function openModal() {
+  document.getElementById('modal').classList.add('active');
+  document.getElementById('modalForm').classList.remove('hidden');
+  document.getElementById('modalSuccess').classList.remove('active');
+}
+
+function closeModal() {
+  document.getElementById('modal').classList.remove('active');
+}
+
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target.id === 'modal') closeModal();
+});
+
+function submitLead() {
+  const name = document.getElementById('leadName').value.trim();
+  const phone = document.getElementById('leadPhone').value.trim();
+  if (!name || !phone) {
+    alert('Заполните имя и телефон');
+    return;
+  }
+  document.getElementById('modalForm').classList.add('hidden');
+  document.getElementById('modalSuccess').classList.add('active');
+  setTimeout(() => {
+    document.getElementById('leadName').value = '';
+    document.getElementById('leadPhone').value = '';
+    document.getElementById('leadMessage').value = '';
+  }, 500);
+}
+
+document.getElementById('leadPhone').addEventListener('input', e => {
+  let v = e.target.value.replace(/\D/g, '');
+  if (v.startsWith('8')) v = '7' + v.slice(1);
+  if (!v.startsWith('7')) v = '7' + v;
+  v = v.slice(0, 11);
+  let formatted = '+7';
+  if (v.length > 1) formatted += ' (' + v.slice(1, 4);
+  if (v.length >= 5) formatted += ') ' + v.slice(4, 7);
+  if (v.length >= 8) formatted += '-' + v.slice(7, 9);
+  if (v.length >= 10) formatted += '-' + v.slice(9, 11);
+  e.target.value = formatted;
+});
+</script>
+</body>
+</html>
